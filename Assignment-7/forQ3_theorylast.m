@@ -6,14 +6,13 @@ C = [2 0 0 -2];
 %% Computing Grammian
 Wc = repmat(A*B,[1,4]);
 for i = 1:4
-    Wc(:,i) = A^(4-i)*B;
+    Wc(:,i) = A^(i-1)*B;
 end
 % Finding its rank
 rank_Wc = rank(Wc);
 isCtrl = logical(rank(Wc) == n);
-%% Hautus Condition
-lambda = eig(A);
-isStab = TRUE;
-for i = 1:length(lambda)
-    if l
-end
+%% Performing SVD & Coord Transformation
+[U,S,V] = svd(Wc);
+Ahat = U\A*U;
+Bhat = U\B;
+Chat = C*U;
