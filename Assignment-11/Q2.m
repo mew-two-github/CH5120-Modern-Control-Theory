@@ -1,4 +1,4 @@
-% DMC SISO with no disturbances and measurement errors
+% DMC SISO with measured disturbances and no measurement errors
 clear; close all;
 %% Models
 a = 0;
@@ -12,7 +12,7 @@ plant_model = c2d(sys,sampling_time);
 Gdist = tf(0.4,[2,1],'inputdelay',0.1);
 dist = ss(Gdist);
 dist_model = c2d(dist,sampling_time);
-%Combined Model
+% Combined Model
 tf_model = [G Gdist];
 ss_model = ss(tf_model);
 model = c2d(ss_model,sampling_time);
@@ -24,20 +24,19 @@ R = 0.1; % Input rate weight
 Weights.ManipulatedVariablesRate = R;
 Weights.OutputVariables = Q;
 Weights.ManipulatedVariables = 0;
-model2 = setmpcsignals(model,'MD',2);
+% Indicate the second input is actually a Measured Disturbance
+model2 = setmpcsignals(model,'MD',2); 
 mp1 = mpc(model2,sampling_time,p,m,Weights);
+% Input constraints
 mp1.ManipulatedVariables.Min = -0.4;mp1.ManipulatedVariables.Max = 0.4;
+% Input rate constraints
 mp1.ManipulatedVariables.RateMin = -0.025; mp1.ManipulatedVariables.RateMax = 0.025;
-% Dist.Name = 'd';
-% Dist.Units = 1;
-% mp1.DisturbanceVariables = Dist;
-% mp1.Disturbance = dist_model;
 %% Running the controller
 ySP = 1; % Setpoint
 T = 50; % Number of simulation steps
 d = 0.5*ones(T,1);  % Measured Disturbance
 options = mpcsimopt();
-options.InputNoise = 0;
+options.InputNoise = 0; % Setting measurement noise to zero
 options.OutputNoise = 0;
 [y,t,u,xp,xmpc,SimOptions,status] = sim(mp1,T,ySP,d,options);
 %% Plotting the results

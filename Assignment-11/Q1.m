@@ -16,13 +16,15 @@ Weights.ManipulatedVariablesRate = R;
 Weights.OutputVariables = Q;
 Weights.ManipulatedVariables = 0;
 mp1 = mpc(model,sampling_time,p,m,Weights);
+% Input constraints
 mp1.ManipulatedVariables.Min = -0.4;mp1.ManipulatedVariables.Max = 0.4;
+% Input rate constraints
 mp1.ManipulatedVariables.RateMin = -0.025; mp1.ManipulatedVariables.RateMax = 0.025;
 %% Running the controller
 ySP = 1; % Setpoint
 T = 50; % Number of simulation steps
 options = mpcsimopt();
-options.InputNoise = 0;
+options.InputNoise = 0; % Setting measurement noise to zero
 options.OutputNoise = 0;
 [y,t,u,xp,xmpc,SimOptions,status] = sim(mp1,T,ySP,options);
 %% Plotting the results
