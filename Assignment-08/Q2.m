@@ -6,6 +6,7 @@ R=1;
 % Report the values of Linf and LQRpoles
 A = [0.2 -0.4;0 0.25];
 B = [1;0];
-[X,L,G] = dare(A,B,Q,R,0,eye(2));
+[X,L,G] = dare(A,B,Q,R,[0;0],eye(2));
 Linf = G;
 LQRpoles = L;
+[K,S,E] = dlqr(A,B,Q,R,0);

@@ -9,6 +9,6 @@ S=S(2:end);
 S=round(S,2);    % Rounding off to introduce some errors
 S = S(1:5);
 S2 = zeros(5,1);
-S2(2:5) = S(2:5);
+S2(2:5) = S(1:4);
 Su = [S,S2];
 H = Su'*Su + eye(2)*0.5;
